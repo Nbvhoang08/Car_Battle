@@ -8,11 +8,12 @@ public class Player : Singleton<Player>
     public List<GameObject> attachedItem = new List<GameObject>();
     public Rigidbody rb;
     // Start is called before the first frame update
-    [SerializeField]private List<Wheel> wheels = new List<Wheel>(); // Danh sách các bánh xe
+    [SerializeField] private List<Wheel> wheels = new List<Wheel>(); // Danh sách các bánh xe
     public GameObject chassis;
     public float wheelForce = 10f;    // Lực tác động của bánh xe
     public float turnSpeed = 50f;     // Tốc độ quay bánh xe
     public float horizontalInput;
+    public float hp;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -28,11 +29,11 @@ public class Player : Singleton<Player>
             {
                 if (wheel != null)
                 {
-                    wheel.HandleMovement(horizontalInput);
+                    wheel.HandleMovement(horizontalInput, 0);
                 }
             }
         }
-    
+
     }
 
     // Làm mới danh sách bánh xe từ attachedItem
@@ -81,28 +82,51 @@ public class Player : Singleton<Player>
         wheels.Clear();
     }
 
-    void OnCollisionEnter(Collision collision)
+
+    private void OnCollisionEnter(Collision collision)
     {
-        // Kiểm tra xem có va chạm với Obstacle hay không
-        if (collision.gameObject.CompareTag("Obstacle"))
+        // Kiểm tra va chạm giữa Weapon và Weapon
+        if ((collision.gameObject.CompareTag("PlayerWeapon") && this.gameObject.CompareTag("EnemyWeapon")) ||
+            (collision.gameObject.CompareTag("EnemyWeapon") && this.gameObject.CompareTag("PlayerWeapon")))
         {
-            // Lấy vị trí va chạm
-            Vector3 collisionPoint = collision.contacts[0].point;
-            // Xử lý logic phá vỡ trên các object con
-            MeshBreaker breaker = chassis.GetComponent<MeshBreaker>();
-            if (breaker != null)
-            {
-                if (collision.relativeVelocity.magnitude > breaker.breakForce)
-                {
-                    foreach (ContactPoint contact in collision.contacts)
-                    {
-                        Vector3 hitPoint = collision.contacts[0].point;
-                  
-                        breaker.BreakAtPoint(hitPoint);
-                    }
-                }
-                 
-            }
+            // Gây ít damage hơn khi vũ khí va chạm với nhau
+            Debug.Log("Weapon collided with another weapon! Less damage applied.");
+            ApplyDamage(collision, 5); // Ví dụ: giảm sát thương còn 5
         }
+        // Kiểm tra va chạm giữa Weapon và đối tượng cha
+        else if ((collision.gameObject.CompareTag("Player") && this.gameObject.CompareTag("EnemyWeapon")) ||
+                 (collision.gameObject.CompareTag("Enemy") && this.gameObject.CompareTag("PlayerWeapon")))
+        {
+            // Gây damage lớn hơn khi vũ khí va chạm với đối tượng cha
+            Debug.Log("Weapon collided with a player or enemy! Full damage applied.");
+            ApplyDamage(collision, 20); // Ví dụ: sát thương đầy đủ là 20
+        }
+        // Kiểm tra va chạm giữa Player và Enemy
+        else if (collision.gameObject.CompareTag("Player") && this.gameObject.CompareTag("Enemy") ||
+                 collision.gameObject.CompareTag("Enemy") && this.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("Player collided with Enemy!");
+            ApplyMutualDamage(collision, 15); // Gây sát thương cho cả hai
+        }
+    }
+
+    // Hàm áp dụng sát thương
+    private void ApplyDamage(Collision collision, int damage)
+    {
+        hp -= 1;
+    }
+
+    // Hàm áp dụng sát thương cho cả hai đối tượng
+    private void ApplyMutualDamage(Collision collision, int damage)
+    {
+        // Gây sát thương cho Enemy
+        var enemyHP = GetComponent<Enemy>();
+        if (enemyHP != null)
+        {
+            enemyHP.hp -= damage;
+        }
+
+        // Gây sát thương cho Player
+        hp -= damage;
     }
 }

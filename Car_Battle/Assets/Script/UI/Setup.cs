@@ -14,6 +14,7 @@ public class Setup : UICanvas
         Player.Instance.rb.useGravity = true;
         Player.Instance.rb.isKinematic = false;
         SoundManager.Instance.PlayClickSound();
+        UIManager.Instance.SwitchRenderMode(true);
     }
     public void RemoveBtn()
     {

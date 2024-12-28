@@ -17,12 +17,13 @@ public class Wheel : MonoBehaviour
     }
 
     // Xử lý logic bánh xe
-    public void HandleMovement(float input)
+    public void HandleMovement(float input, float acceleration)
     {
+
         if (playerRigidbody == null) return;
 
         // Tính toán vận tốc theo hướng di chuyển
-        Vector3 velocity = transform.right * input * wheelForce;
+        Vector3 velocity = transform.right * input * (wheelForce+acceleration);
 
         // Giữ nguyên vận tốc trên trục Y (trọng lực)
         velocity.z = 0; // Đảm bảo không di chuyển trên trục Z

@@ -8,7 +8,7 @@ public class UIManager : Singleton<UIManager>
     // Start is called before the first frame update
     [SerializeField] private List<UICanvas> uiCanvases; // Danh sách các UI canvas có sẵn
     [SerializeField] private Canvas canvas;
-
+    [SerializeField] Camera cam;
 
     protected override void Awake()
     {
@@ -20,7 +20,7 @@ public class UIManager : Singleton<UIManager>
     {
         OpenUI<Setup>();
         SwitchRenderMode(true);
-
+       
     }
     public void SwitchRenderMode(bool isCamMode)
     {

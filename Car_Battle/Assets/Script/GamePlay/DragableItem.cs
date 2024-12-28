@@ -107,9 +107,6 @@ public class DraggableItem : MonoBehaviour, IPointerDownHandler, IDragHandler, I
                     return;
                 }
             }
-
-            // Nếu không trúng Player, xóa object
-            Debug.Log("No valid hit detected. Destroying spawned object.");
             Destroy(spawnedObject);
             isDragging3DObject = false;
         }
