@@ -10,9 +10,21 @@ public class Victory : UICanvas
     {
         Time.timeScale = 1;
         SceneManager.LoadScene("Home");
-        UIManager.Instance.SwitchRenderMode(true);
-        UIManager.Instance.CloseUI<Lose>(0.3f);
+        UIManager.Instance.CloseUI<Victory>(0.6f);
+        UIManager.Instance.OpenUI<Setup>();
         SoundManager.Instance.PlayClickSound();
-
+        StartCoroutine(ResetPlayer());
+        CoinManager.Instance.AddCoins(200);
+    }
+    IEnumerator ResetPlayer()
+    {
+        yield return new WaitForSeconds(0.5f);
+        Player.Instance.rb.useGravity = false;
+        Player.Instance.rb.isKinematic = true;
+        Player.Instance.currentHP = Player.Instance.hp;
+        Player.Instance.transform.position = new Vector3(0, 1, 0.5f);
+        Player.Instance.transform.rotation = Quaternion.identity;
+        Player.Instance.RemoveItem();
+        UIManager.Instance.SwitchRenderMode(true);
     }
 }

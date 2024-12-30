@@ -1,9 +1,18 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Setup : UICanvas
 {
+    public Text CoinsText;
+    private void Update()
+    {
+        if (CoinsText != null) 
+        {
+            CoinsText.text = CoinManager.Instance.GetCoins().ToString();
+        }
+    }
     public void StartGame()
     {
         Time.timeScale = 1;

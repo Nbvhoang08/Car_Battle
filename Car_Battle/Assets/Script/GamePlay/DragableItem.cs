@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
+using System.Collections;
 [RequireComponent(typeof(RectTransform))]
 [RequireComponent(typeof(CanvasGroup))]
-public class DraggableItem : MonoBehaviour, IPointerDownHandler, IDragHandler, IEndDragHandler
+public class DraggableItem : MonoBehaviour, IPointerDownHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
 {
     [SerializeField] private GameObject objectPrefab; // Prefab 3D khi thả vào Scene
-    private GameObject spawnedObject; // Object 3D đang được kéo
+    public GameObject spawnedObject; // Object 3D đang được kéo
     private bool isDragging3DObject = false;
 
     public Vector3 defaultScale = new Vector3(1, 1, 1); // Kích thước cơ bản khi thả vào Player
@@ -16,7 +16,9 @@ public class DraggableItem : MonoBehaviour, IPointerDownHandler, IDragHandler, I
     [SerializeField] private GameObject UI3DModel;
     public Canvas canvas; // Canvas chính
     public float size;
-
+    public int price;
+    public Text PriceText;
+    public Text Log;
     void Awake()
     {
        
@@ -24,16 +26,38 @@ public class DraggableItem : MonoBehaviour, IPointerDownHandler, IDragHandler, I
         itemBoard = GameObject.Find("Board").GetComponent<RectTransform>(); // Đặt đúng tên Object của bạn
         canvasRectTransform = canvas.GetComponent<RectTransform>();
     }
-
+    void Start()
+    {
+        Log.text = " ";
+    }
+    void Update()
+    {
+        if (PriceText != null)
+        {
+            PriceText.text = price.ToString();
+        }
+    }
+    private Vector2 pointerDownPosition; // Vị trí chuột khi nhấn
+    private const float dragThreshold = 5f; // Ngưỡng để xác định drag (pixel)
     public void OnPointerDown(PointerEventData eventData)
     {
-        // Spawn object prefab tại vị trí con chuột
+
+        pointerDownPosition = eventData.position; // Lưu vị trí chuột
+
+        // Các logic spawn object như trước
         if (objectPrefab != null)
         {
+            if (price > CoinManager.Instance.GetCoins())
+            {
+                Log.text = "Not enough coins";
+                SoundManager.Instance.PlayVFXSound(7);
+                StartCoroutine(LogError());
+                return;
+            }
             Ray ray = Camera.main.ScreenPointToRay(eventData.position);
             Plane groundPlane = new Plane(Vector3.forward, Vector3.zero); // Mặt phẳng XY (Z cố định)
 
-            if (groundPlane.Raycast(ray, out float distance))
+            if (groundPlane.Raycast(ray, out float distance) && spawnedObject == null)
             {
                 Vector3 spawnPosition = ray.GetPoint(distance);
                 spawnedObject = Instantiate(objectPrefab, spawnPosition, Quaternion.identity);
@@ -51,14 +75,21 @@ public class DraggableItem : MonoBehaviour, IPointerDownHandler, IDragHandler, I
             }
         }
     }
+   
 
+    IEnumerator LogError()
+    {
+        yield return new WaitForSeconds(0.5f);
+        Log.text = " ";
+    }
     public void OnDrag(PointerEventData eventData)
     {
+       
         if (isDragging3DObject && spawnedObject != null)
         {
             // Di chuyển object theo chuột, chỉ di chuyển trên XY
             Ray ray = Camera.main.ScreenPointToRay(eventData.position);
-            Plane groundPlane = new Plane(Vector3.forward, Vector3.zero); // Mặt phẳng XY (Z cố định)
+            Plane groundPlane = new Plane(Vector3.forward, new Vector3(0.5f, 0.5f, 0.5f)); // Mặt phẳng XY (Z cố định)
 
             if (groundPlane.Raycast(ray, out float distance))
             {
@@ -84,8 +115,7 @@ public class DraggableItem : MonoBehaviour, IPointerDownHandler, IDragHandler, I
             }
         }
     }
-
-    public void OnEndDrag(PointerEventData eventData)
+    public void OnPointerUp(PointerEventData eventData)
     {
         UI3DModel.SetActive(true);
 
@@ -111,6 +141,33 @@ public class DraggableItem : MonoBehaviour, IPointerDownHandler, IDragHandler, I
             isDragging3DObject = false;
         }
     }
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        UI3DModel.SetActive(true);
+
+        if (isDragging3DObject && spawnedObject != null)
+        {
+            float sphereRadius = 0.5f; // Bán kính vùng kiểm tra
+            Vector3 origin = spawnedObject.transform.position;
+
+            // Kiểm tra tất cả các collider trong phạm vi bán kính
+            Collider[] colliders = Physics.OverlapSphere(origin, sphereRadius);
+
+            foreach (Collider collider in colliders)
+            {
+                if (collider.CompareTag("Player")) // Kiểm tra tag Player
+                {
+                    AttachObjectToPlayer(origin, collider.transform);
+                    spawnedObject = null;
+                    isDragging3DObject = false;
+               
+                    return;
+                }
+            }
+            Destroy(spawnedObject);
+            isDragging3DObject = false;
+        }
+    }
 
     private void AttachObjectToPlayer(Vector3 hitPosition, Transform playerTransform)
     {
@@ -127,6 +184,7 @@ public class DraggableItem : MonoBehaviour, IPointerDownHandler, IDragHandler, I
         spawnedObject.transform.localScale = Vector3.one;
         SoundManager.Instance.PlayVFXSound(3);
         Player.Instance.attachedItem.Add(spawnedObject);
+        CoinManager.Instance.RemoveCoins(price);
     }
 
     private bool IsPointerOverItemBoard(PointerEventData eventData)

@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4067951951853601580}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Spike
-  m_TagString: Untagged
+  m_TagString: PlayerWeapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -137,6 +137,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8590659787918260098, guid: e941b8bb1988b2d44942dc81be1c6c53, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8590659787918260098, guid: e941b8bb1988b2d44942dc81be1c6c53, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -163,6 +167,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: e941b8bb1988b2d44942dc81be1c6c53, type: 3}
       propertyPath: m_Name
       value: khoan
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e941b8bb1988b2d44942dc81be1c6c53, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e941b8bb1988b2d44942dc81be1c6c53, type: 3}
+      propertyPath: m_TagString
+      value: PlayerWeapon
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7272274885092727726}
   m_Layer: 0
   m_Name: Harmer
-  m_TagString: Untagged
+  m_TagString: PlayerWeapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 1520668169143183168}
   m_Layer: 0
   m_Name: Hammer
-  m_TagString: Untagged
+  m_TagString: PlayerWeapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -142,7 +142,7 @@ MonoBehaviour:
   id: 
   isRelative: 0
   isFrom: 1
-  isIndependentUpdate: 1
+  isIndependentUpdate: 0
   autoKill: 1
   autoGenerate: 1
   isActive: 1
@@ -240,6 +240,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 238ee68231ea50941a85427d4b020a7d, type: 3}
       propertyPath: m_Name
       value: SledgeHammer
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 238ee68231ea50941a85427d4b020a7d, type: 3}
+      propertyPath: m_TagString
+      value: PlayerWeapon
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

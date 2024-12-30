@@ -13,9 +13,26 @@ public class GamePlay : UICanvas
     public Sprite OnVolume;
     public Sprite OffVolume;
     [SerializeField] private Image buttonImage;
-    void Start()
+    public GameManager gameManager;
+    void Awake()
     {
-        
+        if (gameManager != null)
+        {
+            if (playerHp != null)
+            {
+                playerHp.maxValue = Player.Instance.hp;
+                playerHp.value = Player.Instance.currentHP;
+            }
+            if (enemyHp != null)
+            {
+                enemyHp.maxValue = gameManager.enemy.hp;
+                enemyHp.value = gameManager.enemy.currentHP;
+            }
+        }
+        else
+        {
+            gameManager = FindAnyObjectByType<GameManager>();
+        }
     }
     public void SetMove(float inputMove)
     {
@@ -27,6 +44,25 @@ public class GamePlay : UICanvas
     void Update()
     {
         UpdateButtonImage();
+        // Initialize slider values
+        if(gameManager != null)
+        {
+            if (playerHp != null)
+            {
+                playerHp.maxValue = Player.Instance.hp;
+                playerHp.value = Player.Instance.currentHP;
+            }
+            if (enemyHp != null)
+            {
+                enemyHp.maxValue = gameManager.enemy.hp;
+                enemyHp.value = gameManager.enemy.currentHP;
+            }
+        }
+        else
+        {
+            gameManager = FindAnyObjectByType<GameManager>();
+        }
+        
     }
     public void SoundBtn()
     {

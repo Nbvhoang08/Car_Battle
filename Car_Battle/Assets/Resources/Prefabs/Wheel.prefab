@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8008459263933979400}
   m_Layer: 3
   m_Name: Wheel
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -58,7 +58,7 @@ GameObject:
   - component: {fileID: 6466648631072391346}
   m_Layer: 3
   m_Name: WheelModel
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -109,7 +109,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a579eb2b4db635641ae47949f55d03a4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.014999986
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a579eb2b4db635641ae47949f55d03a4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -150,6 +150,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a579eb2b4db635641ae47949f55d03a4, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a579eb2b4db635641ae47949f55d03a4, type: 3}
+      propertyPath: m_TagString
+      value: PlayerWeapon
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
